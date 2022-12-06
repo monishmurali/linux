@@ -70,6 +70,8 @@
 MODULE_AUTHOR("Qumranet");
 MODULE_LICENSE("GPL");
 
+extern u32 total_exits;
+extern u32 total_proc_time;
 #ifdef MODULE
 static const struct x86_cpu_id vmx_cpu_id[] = {
 	X86_MATCH_FEATURE(X86_FEATURE_VMX, NULL),
@@ -1185,7 +1187,7 @@ void vmx_set_host_fs_gs(struct vmcs_host_state *host, u16 fs_sel, u16 gs_sel,
 }
 
 void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
-{
+{	
 	struct vcpu_vmx *vmx = to_vmx(vcpu);
 	struct vmcs_host_state *host_state;
 #ifdef CONFIG_X86_64
@@ -6281,11 +6283,14 @@ void dump_vmcs(struct kvm_vcpu *vcpu)
  * assistance.
  */
 static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
-{
+{	
+	
+	u64 time_rdtsc = rdtsc();
 	struct vcpu_vmx *vmx = to_vmx(vcpu);
 	union vmx_exit_reason exit_reason = vmx->exit_reason;
 	u32 vectoring_info = vmx->idt_vectoring_info;
 	u16 exit_handler_index;
+	total_exits++;
 
 	/*
 	 * Flush logged GPAs PML buffer, this will make dirty_bitmap more
@@ -6443,6 +6448,8 @@ static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 						kvm_vmx_max_exit_handlers);
 	if (!kvm_vmx_exit_handlers[exit_handler_index])
 		goto unexpected_vmexit;
+	
+	total_proc_time = total_proc_time + (rdtsc() - time_rdtsc);
 
 	return kvm_vmx_exit_handlers[exit_handler_index](vcpu);
 
