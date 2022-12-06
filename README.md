@@ -14,7 +14,7 @@ created vm instance of ubuntu with bootspace 150gb and enabled nested vm.
 
 
 
-4. build kernel
+3. build kernel
 
 
 After kernel was build
@@ -25,11 +25,11 @@ After kernel was build
 
 
 
-6. kvm module is loaded using lsmod. 
+4. kvm module is loaded using lsmod. 
 
-7. kvm is removed using rmmod kvm_intel.
-8. 
-9. Loaded KVM using Sudo modprobe kvm and sudo modprobe kvm_intel command
+5. kvm is removed using rmmod kvm_intel.
+ 
+6. Loaded KVM using Sudo modprobe kvm and sudo modprobe kvm_intel command
 
 
 
