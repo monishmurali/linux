@@ -1,20 +1,11 @@
 CMPE 283 Assignment 3
-============
 
 
 => Created vm instance in google cloud and enabled nested virtualization.
 
-=> Assignment 3 modifies the behavior of the cpuid instruction for the following cases:
-  .CPUID leaf node(%eax=0x4ffffffd)
-     .Return the total number of exits for an exit number(passed as parameter) in %ecx, return the value in %eax.
-  .CPUID lead node(%eax=0x4ffffffc)
-     .Return the total time spent processing the exit number(passed as parameter) in %ecx. The value is measured in cycles.
-     .Return the high 32 bits of the total time spent processing for an exit number in %ebx.
-     .Return the low 32 bits of the total time spent processing for an exit number in %ecx.
      
-    
-     Question 1.
-     . Assignment done by myself.
+      Question 1.
+     Assignment done by myself.
      
      Question 2:
      => steps for assignment 3:
