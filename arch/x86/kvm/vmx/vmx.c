@@ -71,7 +71,9 @@ MODULE_AUTHOR("Qumranet");
 MODULE_LICENSE("GPL");
 
 extern u32 total_exits;
+extern s64 count_every_exit_reason[71];
 extern u32 total_proc_time;
+extern u64 count_everyexit_proc_cycles[71];
 #ifdef MODULE
 static const struct x86_cpu_id vmx_cpu_id[] = {
 	X86_MATCH_FEATURE(X86_FEATURE_VMX, NULL),
@@ -6285,12 +6287,16 @@ void dump_vmcs(struct kvm_vcpu *vcpu)
 static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 {	
 	
-	u64 time_rdtsc = rdtsc();
+	
 	struct vcpu_vmx *vmx = to_vmx(vcpu);
 	union vmx_exit_reason exit_reason = vmx->exit_reason;
 	u32 vectoring_info = vmx->idt_vectoring_info;
 	u16 exit_handler_index;
 	total_exits++;
+	
+	if (exit_reason.basic < 70 ||
+		!(count_every_exit_reason[exit_reason.basic] < 0 ))
+	count_every_exit_reason[exit_reason.basic]++;
 
 	/*
 	 * Flush logged GPAs PML buffer, this will make dirty_bitmap more
@@ -6449,11 +6455,16 @@ static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 	if (!kvm_vmx_exit_handlers[exit_handler_index])
 		goto unexpected_vmexit;
 	
-	total_proc_time = total_proc_time + (rdtsc() - time_rdtsc);
+	
 
 	return kvm_vmx_exit_handlers[exit_handler_index](vcpu);
 
 unexpected_vmexit:
+	
+	
+	if (exit_reason.basic < 70 )
+	count_every_exit_reason[exit_reason.basic] = -1;
+	
 	vcpu_unimpl(vcpu, "vmx: unexpected exit reason 0x%x\n",
 		    exit_reason.full);
 	dump_vmcs(vcpu);
@@ -6468,12 +6479,25 @@ unexpected_vmexit:
 
 static int vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 {
+	u16 exit_reason_basic;
+	u64 time_rdtsc = rdtsc();
+	
 	int ret = __vmx_handle_exit(vcpu, exit_fastpath);
+	
+	
+	total_proc_time = total_proc_time + (rdtsc() - time_rdtsc);
 
 	/*
-	 * Exit to user space when bus lock detected to inform that there is
-	 * a bus lock in guest.
-	 */
+	* Time spent for each exit_handler stored separately
+	*/	
+	exit_reason_basic = (u16)to_vmx(vcpu)->exit_reason.basic;
+	if(exit_reason_basic < 70) {
+	count_everyexit_proc_cycles[exit_reason_basic] = 
+			count_everyexit_proc_cycles[exit_reason_basic] +
+			(rdtsc() - time_rdtsc);			
+	}
+
+	
 	if (to_vmx(vcpu)->exit_reason.bus_lock_detected) {
 		if (ret > 0)
 			vcpu->run->exit_reason = KVM_EXIT_X86_BUS_LOCK;
