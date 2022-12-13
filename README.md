@@ -32,12 +32,11 @@
  <img width="595" alt="output_0x4ffffff_exitno _totalexit" src="https://user-images.githubusercontent.com/59603371/207237929-017cb8c2-fde8-4f21-bbd2-03509fa8b9b6.PNG">
  
  
- <img width="675" alt="output_0x4ffffffe" src="https://user-images.githubusercontent.com/59603371/207238028-26c1068b-d089-4233-a92e-e7e99f35dbe8.PNG">
+ ![image](https://user-images.githubusercontent.com/59603371/207245837-0c16d426-4e17-4e95-8aff-e4a6d5ba8636.png)
+
  
  
- 
- <img width="444" alt="output_3ques" src="https://user-images.githubusercontent.com/59603371/207238099-228efaf5-00da-47db-aadf-eeb3caf9e90b.PNG">
- 
+
  
  #Questioon 3:
 Comment on the frequency of exits – does the number of exits increase at a stable rate? Or are theremore exits performed during certain VM operations? Approximately how many exits does a full VM boot entail?
