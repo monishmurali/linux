@@ -12,7 +12,7 @@ CMPE 283 Assignment 3
      .Return the high 32 bits of the total time spent processing for an exit number in %ebx.
      .Return the low 32 bits of the total time spent processing for an exit number in %ecx.
      
-     ---------------------------------------------------------------------------------------------------------------------------
+    
      Question 1.
      . Assignment done by myself.
      
